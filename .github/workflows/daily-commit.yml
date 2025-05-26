@@ -1,0 +1,31 @@
+name: Daily Random Commit Bot
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Every day at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make Random Commits
+        run: |
+          git config user.name "HimashRajapaksha"
+          git config user.email "rajapakshahimash@gmail.com"
+          
+          # Generate a random number of commits between 1 and 10
+          count=$(( ( RANDOM % 10 )  + 1 ))
+          echo "Making $count random commits"
+          
+          for i in $(seq 1 $count)
+          do
+            echo "Commit number $i" >> random_commit_$i.txt
+            git add .
+            git commit -m "Random commit #$i on $(date)"
+          done
+          
+          git push
