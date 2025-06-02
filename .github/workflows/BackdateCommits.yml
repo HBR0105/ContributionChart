@@ -12,8 +12,8 @@ jobs:
 
       - name: Generate Backdated Commits
         run: |
-          git config user.name "HimashRajapaksha"
-          git config user.email "rajapakshahimash@gmail.com"
+          git config user.name "HBR0105"
+          git config user.email "hbrajapakshaedu@gmail.com"
 
           mkdir -p backdated_commits
 
