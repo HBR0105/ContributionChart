@@ -1,39 +1,24 @@
-name: Backdate Commits
-
-on:
-  workflow_dispatch:  # Manual trigger via GitHub UI
-
-jobs:
-  backdate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Generate Backdated Commits
+      - name: Generate Backdated Commits with Random Content
         run: |
           git config user.name "HBR0105"
           git config user.email "hbrajapakshaedu@gmail.com"
-
+          
           mkdir -p backdated_commits
-
-          # Set the year you want to backdate to
+          
           year=2024
-
-          # Iterate over each day of the year
           for month in {1..12}; do
-            for day in {1..28}; do  # Keep within 28 days for simplicity
-              # Generate a random number of commits for the day (1–7)
+            for day in {1..28}; do
               count=$(( RANDOM % 5 + 1 ))
-
               for i in $(seq 1 $count); do
                 date_str="$year-$(printf "%02d" $month)-$(printf "%02d" $day) 12:00:00"
                 file_path="backdated_commits/${year}_${month}_${day}_commit_$i.txt"
-                echo "Backdated commit #$i on $date_str" > "$file_path"
-                git add "$file_path"
-                GIT_COMMITTER_DATE="$date_str" git commit --date="$date_str" -m "Backdated commit #$i on $date_str"
+                if [ ! -f "$file_path" ]; then
+                  echo "Backdated commit #$i on $date_str - $(uuidgen)" > "$file_path"
+                  git add "$file_path"
+                  GIT_COMMITTER_DATE="$date_str" git commit --date="$date_str" -m "Backdated commit #$i on $date_str"
+                fi
               done
             done
           done
-
-          git push
+          
+          git push || echo "No changes to push"
